@@ -19,15 +19,19 @@
 		$requete = 'SELECT * FROM temperaturevilles';
 		$reponse = $bdd->query($requete);
 
-		while($donnees = $reponse->fetch()){
-			echo ' A ';
-			echo $donnees['ville'];
-			echo ', il fait actuellement ';
-			echo $donnees['temperature'];
-			echo '°C';
-		}
-	    # $reponse->closeCursor()
-	?>
+		$reponse = $bdd->prepare("SELECT temperature, DATE_FORMAT(last_update, '%d %M %Y à %Hh%i') AS last_update FROM temperaturevilles WHERE ville = ? ");
+        $reponse->execute(array($_GET['ville']));
+
+        while ($donnees = $reponse->fetch())
+        {
+	        echo (" le  " . $donnees['last_update'] . " à " . htmlspecialchars(ucfirst($_GET['ville'])) . " il fait actuellement "  . $donnees['temperature'] . "°C" );
+        }
+
+        $reponse->closeCursor();
+
+        ?>
+
+
 </body>
 </html>
 
